@@ -1,2 +1,1 @@
-# dev_vanhoa
- a2billing project
+# a2billing-go-api

@@ -1,0 +1,30 @@
+{
+    "main": {
+        "port": "8000",
+        "log_type": "FILE",
+        "log_level": "debug",
+        "log_file": "tmp/console.log",
+        "log_addr": "113.164.246.7:4001",
+        "storage": "local",
+        "auth": "oauth",
+        "db": "enabled",
+        "redis": "enabled"
+    },
+    "oauth": {
+        "tokenType": "Bearer",
+        "expired_in": "15552000"
+    },
+    "redis": {
+        "address": "localhost:6379",
+        "database": 5,
+        "password": ""
+    },
+    "db": {
+        "driver": "mysql",
+        "host": "113.164.246.25",
+        "port": 4308,
+        "username": "root",
+        "password": "TEL4VN!@#Intern2021@12",
+        "database": "billing"
+    }
+}
