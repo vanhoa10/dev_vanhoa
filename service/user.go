@@ -52,5 +52,5 @@ func (service *AgentService) GenerateTokenByApiKey(apiKey string, isRefresh bool
 		"expired_in":    client.ExpiredIn,
 		"token_type":    client.TokenType,
 	}
-	return response.NewOKResponse(token)
+	return response.OK(token)
 }

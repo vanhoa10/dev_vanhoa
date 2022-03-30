@@ -69,7 +69,7 @@ func (service *CallerIdService) AddCallerIdToCard(agentId, cardId, cid string) (
 			},
 		})
 	}
-	return response.NewResponse(http.StatusOK, map[string]interface{}{
+	return response.Data(http.StatusOK, map[string]interface{}{
 		"message": "successfully",
 		"cid":     cid,
 		"user_id": cardId,
@@ -129,7 +129,7 @@ func (service *CallerIdService) UpdateCallerIdToCard(agentId, cid, cardId string
 			},
 		})
 	}
-	return response.NewResponse(http.StatusOK, map[string]interface{}{
+	return response.Data(http.StatusOK, map[string]interface{}{
 		"message": "successfully",
 		"cid":     cid,
 		"user_id": cardId,

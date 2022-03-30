@@ -6,12 +6,15 @@ import (
 	"a2billing-go-api/common/response"
 	IMySql "a2billing-go-api/internal/sqldb/mysql"
 	"a2billing-go-api/repository"
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 )
+
+var ctx context.Context
 
 type CardService struct {
 }
@@ -26,7 +29,7 @@ func (service *CardService) GetCardsOfAgent(agentId string, limit, offset int) (
 	if err != nil {
 		log.Error("CardService", "GetCardsOfAgent", err.Error())
 	}
-	return response.NewBaseResponsePagination(cards, limit, offset, int(total))
+	return response.Pagination(cards, limit, offset, int(total))
 }
 
 func (service *CardService) GetCardsOfAgentById(agentId string, id string) (int, interface{}) {
@@ -38,7 +41,7 @@ func (service *CardService) GetCardsOfAgentById(agentId string, id string) (int,
 	if card == nil {
 		return response.NotFound()
 	}
-	return response.NewResponse(http.StatusOK, card)
+	return response.Data(http.StatusOK, card)
 }
 
 func (service *CardService) UpdateCardCreditOfAgent(agentId, id string, credit float64) (int, interface{}) {
@@ -86,7 +89,7 @@ func (service *CardService) UpdateCardCreditOfAgent(agentId, id string, credit f
 			},
 		})
 	}
-	return response.NewResponse(http.StatusOK, map[string]interface{}{
+	return response.Data(http.StatusOK, map[string]interface{}{
 		"message": "successfully",
 		"id":      id,
 		"credit":  credit,
@@ -138,7 +141,7 @@ func (service *CardService) AddCardCreditOfAgent(agentId, id string, credit floa
 			},
 		})
 	}
-	return response.NewResponse(http.StatusOK, map[string]interface{}{
+	return response.Data(http.StatusOK, map[string]interface{}{
 		"message": "successfully",
 		"id":      id,
 		"credit":  credit,
@@ -190,7 +193,7 @@ func (service *CardService) UpdateCardStatusOfAgent(agentId, id string, status i
 			},
 		})
 	}
-	return response.NewResponse(http.StatusOK, map[string]interface{}{
+	return response.Data(http.StatusOK, map[string]interface{}{
 		"message": "successfully",
 		"id":      id,
 		"status":  status,
@@ -226,8 +229,8 @@ func (service *CardService) CreateCardAndSip(agentId string, card model.Card, ci
 	} else if tariffGroup == nil {
 		return response.BadRequestMsg("call_plan is not exists")
 	}
-	tx := IMySql.MySqlConnector.GetConn().Begin()
-	card, err = repository.CardRepo.CreateCardTransaction(tx, card)
+	tx, err := IMySql.MySqlConnector.GetConn().BeginTx(ctx, &sql.TxOptions{})
+	card, err = repository.CardRepo.CreateCardTransaction(&tx, card)
 	if err != nil {
 		log.Error("CardService", "CreateCardAndSip - CreateCard", err.Error())
 		tx.Rollback()
@@ -241,7 +244,7 @@ func (service *CardService) CreateCardAndSip(agentId string, card model.Card, ci
 		"status":    card.Status,
 		"call_plan": card.Tariff.Int64,
 	}
-	if callerId, err := repository.CallerIdRepo.CreateCallerIdTransaction(tx, model.CallerId{Cid: cid, IDCcCard: card.ID, Activated: "t"}); err != nil {
+	if callerId, err := repository.CallerIdRepo.CreateCallerIdTransaction(&tx, model.CallerId{Cid: cid, IDCcCard: card.ID, Activated: "t"}); err != nil {
 		log.Error("CardService", "GetCallerIdByCid", err.Error())
 		tx.Rollback()
 		return response.ServiceUnavailableMsg("create customer invalid")
@@ -282,7 +285,7 @@ func (service *CardService) CreateCardAndSip(agentId string, card model.Card, ci
 			},
 			Rtpkeepalive: "0",
 		}
-		sipBuddies, err := repository.SipBuddiesRepo.CreateSipBuddiesTransaction(tx, sipBuddies)
+		sipBuddies, err := repository.SipBuddiesRepo.CreateSipBuddiesTransaction(&tx, sipBuddies)
 		if err != nil {
 			log.Error("CardService", "CreateCardAndSip - CreateSipBuddies", err.Error())
 			tx.Rollback()
@@ -317,7 +320,7 @@ func (service *CardService) CreateCardAndSip(agentId string, card model.Card, ci
 				String: "no",
 			},
 		}
-		iaxBuddies, err := repository.IaxBuddiesRepo.CreateIaxBuddiesTransaction(tx, iaxBuddies)
+		iaxBuddies, err := repository.IaxBuddiesRepo.CreateIaxBuddiesTransaction(&tx, iaxBuddies)
 		if err != nil {
 			log.Error("CardService", "CreateCardAndSip - CreateIaxBuddies", err.Error())
 			tx.Rollback()
@@ -326,5 +329,5 @@ func (service *CardService) CreateCardAndSip(agentId string, card model.Card, ci
 		result["iax"] = "created"
 	}
 	tx.Commit()
-	return response.NewResponse(http.StatusOK, result)
+	return response.Data(http.StatusOK, result)
 }

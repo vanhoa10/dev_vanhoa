@@ -19,5 +19,5 @@ func (service *CallService) GetCallLogs(agentId, cardId, source, fromDate, toDat
 	if err != nil {
 		log.Error("ReportService", "GetAgentCallLogs", err.Error())
 	}
-	return response.NewBaseResponsePagination(callLogs, limit, offset, int(total))
+	return response.Pagination(callLogs, limit, offset, int(total))
 }
