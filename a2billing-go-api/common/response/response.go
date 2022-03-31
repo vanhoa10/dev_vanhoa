@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Pagination(data, total, limit, offset interface{}) (int, interface{}) {
+func Pagination(data, total, limit, offset interface{}) (int, interface{}) { //newbaseresponsepagination
 	return http.StatusOK, map[string]interface{}{
 		"data":   data,
 		"total":  total,
@@ -15,20 +15,20 @@ func Pagination(data, total, limit, offset interface{}) (int, interface{}) {
 	}
 }
 
-func Scroll(data interface{}, scrollId string) (int, interface{}) {
+func Scroll(data interface{}, scrollId string) (int, interface{}) { //newbaseresponsescroll
 	return http.StatusOK, map[string]interface{}{
 		"items":     data,
 		"scroll_id": scrollId,
 	}
 }
 
-func Data(code int, data interface{}) (int, interface{}) {
+func Data(code int, data interface{}) (int, interface{}) { //newresponse
 	return code, gin.H{
 		"data": data,
 	}
 }
 
-func OK(data interface{}) (int, interface{}) {
+func OK(data interface{}) (int, interface{}) { //newOKresponse
 	return http.StatusOK, data
 }
 
