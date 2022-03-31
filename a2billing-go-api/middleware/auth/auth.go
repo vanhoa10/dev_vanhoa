@@ -3,12 +3,14 @@ package auth
 import (
 	"a2billing-go-api/common/log"
 	goauth "a2billing-go-api/middleware/auth/goauth"
-	"a2billing-go-api/service"
+
+	//"a2billing-go-api/service"
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
-	"strings"
+
+	//"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -160,7 +162,8 @@ func AuthMiddleware() gin.HandlerFunc {
 }
 
 func validateBasicAuth(ctx context.Context, r *http.Request, username, password string) (auth.Info, error) {
-	userDomain := strings.Split(username, "@")
+	return nil, nil
+	/*userDomain := strings.Split(username, "@")
 	if len(userDomain) != 2 {
 		log.Error("AuthMiddleware", "validateBasicAuth", "missing @")
 		return nil, errors.New("invalid credentials")
@@ -181,7 +184,7 @@ func validateBasicAuth(ctx context.Context, r *http.Request, username, password 
 	domainName, _ := claims["domain_name"].(string)
 	level, _ := claims["level"].(string)
 	user := NewGoAuthUser(name, id, nil, nil, domainId, domainName, level, nil)
-	return user, nil
+	return user, nil*/
 }
 
 func validateTokenAuth(ctx context.Context, r *http.Request, tokenString string) (auth.Info, time.Time, error) {
@@ -217,4 +220,8 @@ func validateTokenAuth(ctx context.Context, r *http.Request, tokenString string)
 		return user, time.Now(), nil
 	}
 	return nil, time.Time{}, errors.New("invalid token")
+}
+func GetUserId(c *gin.Context) (interface{}, bool) {
+	user, isExist := c.Get("user")
+	return user.(auth.Info).GetID(), isExist
 }

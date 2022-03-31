@@ -18,11 +18,11 @@ func NewAgentRepository() AgentRepository {
 var AgentRepo AgentRepository
 
 func (repo *AgentRepository) SyncTable() error {
-	err := IMySql.SqlClientConn.GetDB().Set("gorm:table_options", "ENGINE=InnoDB COLLATE utf8_general_ci").AutoMigrate(&model.Agent{})
-	if err != nil {
-		log.Error("AgentRepository", "SyncTable", err.Error())
-		return err
-	}
+	// err := IMySql.SqlClientConn.GetDB().Set("gorm:table_options", "ENGINE=InnoDB COLLATE utf8_general_ci").AutoMigrate(&model.Agent{})
+	// if err != nil {
+	// 	log.Error("AgentRepository", "SyncTable", err.Error())
+	// 	return err
+	// }
 	return nil
 }
 

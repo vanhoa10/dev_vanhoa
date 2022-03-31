@@ -5,7 +5,7 @@ import (
 	"a2billing-go-api/common/model"
 	"a2billing-go-api/common/response"
 	"a2billing-go-api/common/validator"
-	mdw "a2billing-go-api/middleware"
+	mdw "a2billing-go-api/middleware/auth"
 	"a2billing-go-api/service"
 	"database/sql"
 	"fmt"
