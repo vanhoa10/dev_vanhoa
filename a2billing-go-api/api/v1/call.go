@@ -3,7 +3,7 @@ package api
 import (
 	dataUtil "a2billing-go-api/common/data"
 	"a2billing-go-api/common/response"
-	mdw "a2billing-go-api/middleware"
+	mdw "a2billing-go-api/middleware/auth"
 	"a2billing-go-api/service"
 	"time"
 
