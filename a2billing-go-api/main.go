@@ -5,7 +5,7 @@ import (
 	"a2billing-go-api/common/cache"
 	IRedis "a2billing-go-api/internal/redis"
 	redis "a2billing-go-api/internal/redis/driver"
-	sqlclient "a2billing-go-api/internal/sql-client"
+	sqlclient "a2billing-go-api/internal/sql-client/driver"
 	"a2billing-go-api/middleware/auth/goauth"
 	"a2billing-go-api/repository"
 	"io"
